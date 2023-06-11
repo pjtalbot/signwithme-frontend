@@ -1,0 +1,18 @@
+.gif-container {
+     /* Adjust this height value as needed */
+   
+    align-items: center;
+    justify-content: center;
+    object-fit: contain;
+
+  }
+
+  .container {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    object-fit: contain;
+    margin: 2rem;
+    padding: 10px;
+
+  }

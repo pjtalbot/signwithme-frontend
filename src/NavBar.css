@@ -1,0 +1,16 @@
+.NavBar {
+background-color: goldenrod;
+}
+
+.NavBar a {
+    padding: 0.5em 0;
+    width: 10em;
+    display: inline-block;
+    color: white;
+    text-decoration: none;
+  }
+
+.NavBar a.active {
+    color: white;
+    background-color: black;
+  }
