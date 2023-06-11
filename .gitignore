@@ -25,3 +25,4 @@ yarn-error.log*
 Explore.jsx
 SignUpForm.js
 GifList.jsx
+.env
