@@ -6,12 +6,16 @@ import heartIcon from './resources/lover.png'
 const giphy_api_key = process.env.REACT_APP_GIPHY_API_KEY
 const backend_url = process.env.REACT_APP_BACKEND_URL
 
+let favorites;
+
 
 function Gif({ data }) {
   const [favorite, setFavorite] = useState(false);
   const [mirror, setMirror] = useState(false);
   const [apiResponse, setApiResponse] = useState('')
 
+  // checks DB for existing row with Giphy ID
+  // NOTE: Does NOT check with serial id.
   const checkExists = async (giphyId) => {
     let response = await axios.get(`${backend_url}gifs/${data.id}`)
     if (response.data.length === 0) {
@@ -21,9 +25,13 @@ function Gif({ data }) {
     return true
   }
 
+  
+  // increments count column for Gif in backend db
+  // If give is not present, creates row for gif
   const upVote = async () => {
     let exists = await checkExists(data.id)
     if(!exists) {
+      // column "user" refers to the Giphy account user name that created original gif
       let req = {"data": {"id": `${data.id}`, "url": `${data.url}`, "user": {"username": `${data.user.username}`}}}
       let response = await axios.post(`${backend_url}gifs`, req)
       return response;
@@ -33,18 +41,22 @@ function Gif({ data }) {
     }
   }
 
+  // updates count column in backend db
   const downVote = async () => {
-
     let response = await axios.post(`${backend_url}gifs/${data.id}/down`)
     return response
   }
 
-  let favorites;
-
+//  Toggles state mirror
   const handleMirrorButton = () => {
     setMirror(!mirror);
   };
 
+  
+  // Favorites gif, adds id to local storage
+  // checks if backend DB has ID already
+  // If so, increments of decrements, depending on "favorite" state
+  
   const handleFavoriteButton = async () => {
     let updatedFavorites = [];
     favorites = JSON.parse(localStorage.getItem("favoriteId"));
@@ -60,11 +72,11 @@ function Gif({ data }) {
       setFavorite(!favorite);
       upVote()
     }
-  
-    console.log(`currentState: ${JSON.stringify(favorite)}`);
-    console.log(data.id);
-    console.log(`change state to: ${!favorite}`);
   };
+
+  /*
+  Checks favoriteId local storage for Gif's id and sets favorite state before render.
+  */
 
   useEffect(() => {
     // Check if the gif is in favorites using the data.id and update the favorite state
@@ -76,6 +88,10 @@ function Gif({ data }) {
   const mirrored = mirror ? "mirrored img-fluid gif-img" : " img-fluid gif-img";
   const isFavorite = favorite ? "favorite" : "";
 
+  /*
+  Generates usable data where provided in slug from Giphy
+  returns Array with length of 2, trimmedTitle (used as text definition and img alt)
+  */
   function transformTitleString(titleString) {
     
     let credit = titleString.substring(titleString.indexOf('GIF'))

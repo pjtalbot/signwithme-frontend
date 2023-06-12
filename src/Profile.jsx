@@ -9,18 +9,27 @@ const giphyApiKey = process.env.REACT_APP_GIPHY_API_KEY
 const Profile = () => {
   const [favorites, setFavorites] = useState([]);
 
+  /*
+  checks local storage for item "favoriteId" and parses it into an array of Id's
+  sets favorites state
+  */
   useEffect(() => {
     const fetchFavoritesData = async () => {
       if (localStorage.getItem("favoriteId") !== null) {
         const favoriteIds = JSON.parse(localStorage.getItem("favoriteId"));
         const favoritesData = await getDataById(favoriteIds);
         setFavorites(favoritesData);
+      } else {
+        localStorage.setItem("favoriteId", JSON.stringify([]))
       }
     };
 
     fetchFavoritesData();
   }, []);
 
+    /*
+  Collects Data for each gif from external API (Giphy)
+  */
   const getDataById = async (ids) => {
     const promises = ids.map(async (id) => {
       const response = await axios.get(
@@ -30,11 +39,10 @@ const Profile = () => {
       if (response.data.meta.status === 200) {
         return response.data.data;
       } else {
-        console.log(response.data.meta.msg);
+        // Include throw Error
         return null;
       }
     });
-
     const results = await Promise.all(promises);
     return results.filter((result) => result !== null);
   };
