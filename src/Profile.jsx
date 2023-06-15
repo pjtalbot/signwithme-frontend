@@ -12,7 +12,7 @@ const Profile = () => {
 
   /*
   checks local storage for item "favoriteId" and parses it into an array of Id's
-  sets favorites state
+  sets favorites state. Runs on Initial render
   */
   useEffect(() => {
     const fetchFavoritesData = async () => {
