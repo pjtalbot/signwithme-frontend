@@ -8,6 +8,7 @@ const giphyApiKey = process.env.REACT_APP_GIPHY_API_KEY
 
 const Profile = () => {
   const [favorites, setFavorites] = useState([]);
+  const [isLoading, setIsLoading] = useState(false)
 
   /*
   checks local storage for item "favoriteId" and parses it into an array of Id's
@@ -35,7 +36,6 @@ const Profile = () => {
       const response = await axios.get(
         `https://api.giphy.com/v1/gifs/${id}?api_key=${giphyApiKey}`
       );
-
       if (response.data.meta.status === 200) {
         return response.data.data;
       } else {
@@ -54,9 +54,9 @@ const Profile = () => {
       <div className="row row-cols-2 row-cols-md-3">
         {favorites.length > 0 ? (
           favorites.map((favorite) => (
-            <div  className="col mb-4">
+            <div  className="col mb-4" key={favorite.id}>
               <div className="gif-container" >
-              <Gif data={favorite} key={favorite.id}/>
+              <Gif data={favorite} />
               </div>
             </div>
           ))

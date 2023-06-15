@@ -1,6 +1,4 @@
-import React, { useSate } from "react"
-import { Link, NavLink } from "react-router-dom"
-
+import React from "react"
 import Search from "./Search"
 
 const HomePage = () => {
@@ -13,8 +11,9 @@ const HomePage = () => {
                 <p>Start your sign language journey today with SignWithMe!</p>
             </div>
         </div>
+
+        <div className="h2 my-5">Try it out!</div>
         <Search/>
-        
       </div>  
 
       );

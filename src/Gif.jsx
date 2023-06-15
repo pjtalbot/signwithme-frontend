@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from 'axios'
-import heartIcon from './resources/lover.png'
+
 
 
 const giphy_api_key = process.env.REACT_APP_GIPHY_API_KEY
@@ -12,10 +12,9 @@ let favorites;
 function Gif({ data }) {
   const [favorite, setFavorite] = useState(false);
   const [mirror, setMirror] = useState(false);
-  const [apiResponse, setApiResponse] = useState('')
 
   // checks DB for existing row with Giphy ID
-  // NOTE: Does NOT check with serial id.
+  // NOTE: Does NOT check with serial id from our DB. column giphy_id
   const checkExists = async (giphyId) => {
     let response = await axios.get(`${backend_url}gifs/${data.id}`)
     if (response.data.length === 0) {
@@ -41,21 +40,22 @@ function Gif({ data }) {
     }
   }
 
-  // updates count column in backend db
+  /* updates count column in backend db */
   const downVote = async () => {
     let response = await axios.post(`${backend_url}gifs/${data.id}/down`)
     return response
   }
 
-//  Toggles state mirror
+/*  Toggles state mirror */
   const handleMirrorButton = () => {
     setMirror(!mirror);
   };
 
   
-  // Favorites gif, adds id to local storage
+  /* Favorites gif, adds id to local storage
   // checks if backend DB has ID already
   // If so, increments of decrements, depending on "favorite" state
+  */
   
   const handleFavoriteButton = async () => {
     let updatedFavorites = [];
@@ -109,13 +109,13 @@ function Gif({ data }) {
   let gifTextArray = transformTitleString(data.title);
 
   return (
-    <div className="card shadow">
+    <div className="card shadow" key={data.id}>
       <div className="card-body">
         <div className="card-img-top">
           <img src={data.images.downsized.url} alt={data.slug} className={mirrored} />
           <button className={`favorite-btn ${isFavorite} btn rounded shadow`} onClick={handleFavoriteButton}></button>
           <button onClick={handleMirrorButton}className="btn border border-2 mirror-btn btn btn-secondary shadow">Mirror</button>
-          {(data.title != '' || data.title === null) ? <h5 className="card-title py-5">{gifTextArray[0]}</h5> : <h5 className="card-title py-5"> No description available</h5>}
+          {(data.title !== '' || data.title === null) ? <h5 className="card-title py-5">{gifTextArray[0]}</h5> : <h5 className="card-title py-5"> No description available</h5>}
           <p className="card-text">{gifTextArray[1]}.</p>
         </div>
       </div>

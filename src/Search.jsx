@@ -7,14 +7,12 @@ const giphy_api_key = process.env.REACT_APP_GIPHY_API_KEY
 const backend_url = process.env.REACT_APP_BACKEND_URL
 
 
-
 const Search = () => {
     
-
     const [search, setSearch] = useState('')
-    const [apiResponse, setApiResponse] = useState('')
     const [giphyUser, setGiphyUser] = useState('signwithrobert')
     const [imgSources, setImgSources] = useState([])
+    const [isLoading, setIsLoading] = useState(false)
 
     const [searchResults, setSearchResults] = useState([])
 
@@ -24,30 +22,14 @@ const Search = () => {
         library: giphyUser
     }
 
-
-
     const [formData, setFormData] = useState(INITIAL_STATE)
-
-    const callAPI = async () => {
-        let response = await axios.get(backend_url);
-        setApiResponse({response});
-    }
-    
+    /* Sets Search and GiphyUser state
+    */
     const runSearch = (data) => {
-        
         setSearch(data.search)
+
         setGiphyUser(data.library)
     }
-    // const myQuery = useMemo(() => ({search}, [search]))
-
-
-    // TODO: instead use useEffect, with second prop. Maybe pass empty array?
-    // TODO: Move to helper function
-
-
-    console.log(formData)
-
-
 
     const handleChange = e => {
         const {name, value} = e.target
@@ -60,19 +42,13 @@ const Search = () => {
                 [name]: value
             })
         })
-        
     }
 
-     const handleSubmit =  (e) => {
+const handleSubmit =  (e) => {
         e.preventDefault()
         console.log("handling submit")
-
         const { search, value }= e.target
-
-        console.log(formData)
-        let tempSearch = formData.search
-
-        
+        let tempSearch = formData.search.trim()
         setFormData({
             search: tempSearch,
             limit: formData.limit,
@@ -80,23 +56,22 @@ const Search = () => {
         })
         let temp = formData
         runSearch(temp)
-        
-
     }
 /**
  *  This useEffect runs on initial load, and when giphyUser or query state changes
  * sets imgSources state. Array of src urls
+ * 
+ * On Initial render or if search term is null, it returns the 10 most popular Gifs from that Giphy User's Library
  * */ 
 
     
     useEffect(() => {
         let sourcesArr = []
-
         if(!search) {
             console.log('In EFFECT')
             async function getTopResults() {
-                // TODO, move API key to .env
-                let key = giphy_api_key
+                setIsLoading(true)
+                const key = giphy_api_key
                 const res = await axios.get(`https://api.giphy.com/v1/gifs/search?api_key=${key}=%40${giphyUser}&limit=5&offset=0&lang=en`)
                 setSearchResults(res.data)
 
@@ -105,11 +80,15 @@ const Search = () => {
                 })
 
                 setImgSources(sourcesArr)
+                setTimeout(() => {
+                    setIsLoading(false)
+                }, 200)
             }
             getTopResults();
         } else {
             async function getSearchResults(search, giphyUser) {
-                let key = giphy_api_key
+                setIsLoading(true)
+                const key = giphy_api_key
                 const res = await axios.get(`https://api.giphy.com/v1/gifs/search?api_key=${key}=%40${giphyUser}+${search}&limit=10`)
 
                 setSearchResults(res.data)
@@ -117,6 +96,10 @@ const Search = () => {
                     sourcesArr.push(searchResult)
                 });
                 setImgSources(sourcesArr)
+                
+                setTimeout(() => {
+                    setIsLoading(false)
+                }, 200)
             }
             getSearchResults(search, giphyUser)
         }
@@ -128,10 +111,7 @@ const Search = () => {
                 <div className="form-group">
                     <label htmlFor="search" className="h3">Search</label>
                     <input className="form-control" id ="search" type="text" name="search" placeholder="Search"
-                    value={formData.search} onChange={handleChange}/>
-                    {/* <label htmlFor="library">Library</label>
-                    <input className="form-control" id ="search" type="text" name="library" placeholder="signwithrobert"
-                    value={formData.name} onChange={handleChange}/> */}
+                    value={formData.search} onChange={handleChange} maxLength={30}/>
                     <label htmlFor="library" className="h4 pt-4">Select Library </label>
                         <select className="form-select" name="library" multiple={false} defaultValue={"signwithrobert"} onChange={handleChange}>
                                             <option value="signwithrobert">Sign-With-Robert</option>
@@ -143,32 +123,35 @@ const Search = () => {
                                             <option value="aslnook">ASL Nook</option>
                                             <option value="ASL_Connect">ASL Connect</option>
                         </select>
-                    <button className="btn btn-primary">Go!</button>
+                    <button className="btn btn-primary my-3" id="search-button">Search!</button>
                 </div>
             </form>
-            {console.log(searchResults.data)}
-            <div className="container">
-                {imgSources.length === 0 &&
-                [1].map((i) => {
-                    return (
-                        <div>
-                            <h3>No Results Found.</h3>
-                        </div>
-                    )
-                })};
-                
-                { imgSources.length > 0 &&
-                imgSources.map((src) => {
-                    const data = JSON.stringify(src);
-                    return (
-                        <div>
-                            <Gif  data={src} key ={src}/>
-                        </div>
-                )     
-     })}
+            {imgSources.length === 0 && !isLoading && (
+                <div>
+                    <h3>No Results Found.</h3>
+                </div>
+            )}
+
+        {isLoading && (
+            <div>
+                <h3>Loading...</h3>
             </div>
-        </div>
-    )
+        )}
+
+        {imgSources.length > 0 && !isLoading && (
+            <div>
+                {imgSources.map((src) => {
+                    return (
+                        <div key={src.id} className="my-3">
+                            <Gif data={src}  />
+                        </div>
+                    );
+                })}
+            </div>
+            )}
+            </div>
+        
+        )
     }
 
 export default Search

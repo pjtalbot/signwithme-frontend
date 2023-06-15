@@ -1,5 +1,5 @@
-import React, { useSate } from "react"
-import { Link, NavLink, BrowserRouter, Route, Switch } from "react-router-dom"
+import React from "react"
+import { NavLink } from "react-router-dom"
 
 import "./NavBar.css"
 
