@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useCallback, useMemo } from "react"
-import { Link, NavLink } from "react-router-dom"
+import React, { useState, useEffect } from "react"
+
 import Gif  from "./Gif.jsx"
 import axios from "axios"
 
 const giphy_api_key = process.env.REACT_APP_GIPHY_API_KEY
-const backend_url = process.env.REACT_APP_BACKEND_URL
+
 
 
 const Search = () => {
@@ -47,7 +47,7 @@ const Search = () => {
 const handleSubmit =  (e) => {
         e.preventDefault()
         console.log("handling submit")
-        const { search, value }= e.target
+        
         let tempSearch = formData.search.trim()
         setFormData({
             search: tempSearch,

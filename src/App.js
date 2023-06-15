@@ -1,15 +1,11 @@
-import logo from './logo.svg';
 import React from 'react';
 import './App.css';
 import './Gif.css';
-
 import { BrowserRouter, Route } from 'react-router-dom';
-
 import NavBar from './NavBar';
 import HomePage from './Home';
 import Profile from './Profile';
 
-import Gif from './Gif';
 import Search from './Search';
 
 function App() {

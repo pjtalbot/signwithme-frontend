@@ -2,8 +2,6 @@ import React, { useState, useEffect } from "react";
 import axios from 'axios'
 
 
-
-const giphy_api_key = process.env.REACT_APP_GIPHY_API_KEY
 const backend_url = process.env.REACT_APP_BACKEND_URL
 
 let favorites;
