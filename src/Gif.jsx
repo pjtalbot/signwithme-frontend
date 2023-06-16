@@ -57,7 +57,13 @@ function Gif({ data }) {
   
   const handleFavoriteButton = async () => {
     let updatedFavorites = [];
-    favorites = JSON.parse(localStorage.getItem("favoriteId"));
+    
+      favorites = JSON.parse(localStorage.getItem("favoriteId"));
+      if (!favorites) {
+        favorites = []
+      }
+    
+    
   
     if (favorite) {
       console.log(favorites)
