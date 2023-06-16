@@ -92,7 +92,7 @@ function Gif({ data }) {
   */
   function transformTitleString(titleString) {
     
-    let credit = titleString.substring(titleString.indexOf('GIF'))
+    let credit = `GIF by ${data.username}`
     let trimmedTitle = (titleString.substring(0, titleString.indexOf('GIF'))).toLowerCase()
     if (trimmedTitle.includes('sign language')) {
 
