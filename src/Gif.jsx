@@ -4,7 +4,7 @@ import axios from 'axios'
 
 const backend_url = process.env.REACT_APP_BACKEND_URL
 
-let favorites;
+let favorites =[];
 
 
 function Gif({ data }) {
@@ -60,11 +60,13 @@ function Gif({ data }) {
     favorites = JSON.parse(localStorage.getItem("favoriteId"));
   
     if (favorite) {
+      console.log(favorites)
       updatedFavorites = favorites.filter((id) => id !== data.id);
       localStorage.setItem("favoriteId", JSON.stringify(updatedFavorites));
       setFavorite(!favorite);
       downVote()
-    } else {
+    } else if (!favorite) {
+      console.log(favorites)
       updatedFavorites = [...favorites, data.id];
       localStorage.setItem("favoriteId", JSON.stringify(updatedFavorites));
       setFavorite(!favorite);
